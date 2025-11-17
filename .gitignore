@@ -1,0 +1,37 @@
+# Python / Flask
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+
+# Logs / cache
+*.log
+.cache/
+
+# Local database & migrations
+database/
+instance/
+*.db
+*.sqlite3
+
+# Environment / API Keys
+.env
+.env.*
+.env.local
+.env.production
+
+# Node dependencies (if any)
+node_modules/

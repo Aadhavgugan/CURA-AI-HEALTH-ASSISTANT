@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Diet & Nutrition Tips | CURA</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: url("{{ url_for('static', filename='images/bg_image.jpg') }}") no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 10, 10, 0.45);
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 80px auto;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(156, 29, 231, 0.4);
+    }
+
+    h1 {
+      text-align: center;
+      color: #E0AAFF;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+    }
+
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .plan-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 15px rgba(156, 29, 231, 0.3);
+    }
+
+    .plan-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 25px rgba(156, 29, 231, 0.6);
+    }
+
+    .plan-card h3 {
+      color: #61ffca;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+
+    .plan-card p {
+      color: #ddd;
+      font-size: 0.95rem;
+    }
+
+    /* FIXED — CENTERED PLAN DETAILS */
+    .plan-details {
+      display: none;
+      background: rgba(20, 20, 20, 0.9);
+      border-radius: 15px;
+      margin-top: 30px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(156, 29, 231, 0.5);
+
+      /* Center content */
+      
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .plan-details.active {
+      display: flex;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    h2 {
+      color: #E0AAFF;
+      text-align: center;
+    }
+
+    ul, p {
+      line-height: 1.6;
+      color: #ddd;
+      max-width: 700px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 20px;
+      background: linear-gradient(90deg, #9C1DE7, #581B98);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .back-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <h1 class="logo">CURA</h1>
+    <div class="nav-links">
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('analyze') }}">Symptom Analyzer</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>🍎 Diet & Nutrition Plans</h1>
+
+    <!-- PLAN SELECTION BOXES -->
+    <div class="plans">
+      <div class="plan-card" onclick="showPlan(1)">
+        <h3>🥗 Balanced Indian Vegetarian Diet</h3>
+        <p>Perfect for maintaining energy and getting all nutrients.</p>
+      </div>
+      <div class="plan-card" onclick="showPlan(2)">
+        <h3>💪 Muscle Gain Diet</h3>
+        <p>High protein + calorie surplus plan for fitness and strength.</p>
+      </div>
+      <div class="plan-card" onclick="showPlan(3)">
+        <h3>🏃‍♂️ Weight Loss Diet</h3>
+        <p>Low-calorie diet focusing on portion control and balance.</p>
+      </div>
+      <div class="plan-card" onclick="showPlan(4)">
+        <h3>🍳 High-Protein + Low-Carb Diet</h3>
+        <p>Best for fat loss and lean muscle development.</p>
+      </div>
+      <div class="plan-card" onclick="showPlan(5)">
+        <h3>🌿 Detox & Energy Boost Plan</h3>
+        <p>Cleanse your body and recharge with natural foods.</p>
+      </div>
+      <div class="plan-card" onclick="showPlan(6)">
+        <h3>🦠 Gut Health & Immunity Support Plan</h3>
+        <p>Enhance digestion and strengthen your immune system.</p>
+      </div>
+    </div>
+
+    <!-- DIET PLAN CONTENT (CENTERED NOW) -->
+
+    <div class="plan-details" id="plan1">
+      <h2>Balanced Indian Vegetarian Diet</h2>
+      <p><b>Breakfast:</b> Oats or poha with veggies + fruit + tea/milk</p>
+      <p><b>Lunch:</b> 2 rotis + dal + sabzi + salad + curd</p>
+      <p><b>Snack:</b> Roasted chana / nuts</p>
+      <p><b>Dinner:</b> Brown rice or chapati + paneer/soya curry</p>
+    </div>
+
+    <div class="plan-details" id="plan2">
+      <h2>Muscle Gain Diet</h2>
+      <p><b>Breakfast:</b> Eggs or paneer + oats + banana</p>
+      <p><b>Lunch:</b> Rice/chapati + dal + paneer curry</p>
+      <p><b>Snack:</b> Protein shake / peanut butter sandwich</p>
+      <p><b>Dinner:</b> High protein meal + veggies</p>
+    </div>
+
+    <div class="plan-details" id="plan3">
+      <h2>Weight Loss Diet</h2>
+      <p><b>Breakfast:</b> Sprouts + fruit + green tea</p>
+      <p><b>Lunch:</b> Brown rice / chapati + veggies + dal</p>
+      <p><b>Snack:</b> Fruits / cucumber</p>
+      <p><b>Dinner:</b> Soup or grilled paneer</p>
+    </div>
+
+    <div class="plan-details" id="plan4">
+      <h2>High-Protein + Low-Carb Diet</h2>
+      <p><b>Breakfast:</b> Protein smoothie</p>
+      <p><b>Lunch:</b> Tofu/paneer + veggies</p>
+      <p><b>Snack:</b> Nuts / Greek yogurt</p>
+      <p><b>Dinner:</b> Eggs / tofu + salad</p>
+    </div>
+
+    <div class="plan-details" id="plan5">
+      <h2>Detox & Energy Boost Plan</h2>
+      <p><b>Morning:</b> Lemon honey water</p>
+      <p><b>Breakfast:</b> Smoothie or papaya</p>
+      <p><b>Lunch:</b> Dal + phulkas + veggies</p>
+      <p><b>Dinner:</b> Veg soup or khichdi</p>
+    </div>
+
+    <div class="plan-details" id="plan6">
+      <h2>Gut Health & Immunity Plan</h2>
+      <p><b>Morning:</b> Lemon water + chia</p>
+      <p><b>Breakfast:</b> Overnight oats / idli</p>
+      <p><b>Lunch:</b> Quinoa + dal + veggies</p>
+      <p><b>Dinner:</b> Light stew or tofu bowl</p>
+    </div>
+
+    <br><br>
+    <a href="{{ url_for('index') }}" class="back-btn">← Back to Home</a>
+  </div>
+
+  <script>
+    function showPlan(num) {
+      document.querySelectorAll('.plan-details').forEach(div => div.classList.remove('active'));
+      document.getElementById('plan' + num).classList.add('active');
+      window.scrollTo({ top: document.getElementById('plan' + num).offsetTop - 60, behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+</html>

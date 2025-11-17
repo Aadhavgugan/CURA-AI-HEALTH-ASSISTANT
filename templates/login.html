@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login – Cura</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <h1 class="logo">CURA</h1>
+    <div class="nav-links">
+      <a href="{{ url_for('register') }}">Register</a>
+    </div>
+  </nav>
+
+  <!-- Auth card -->
+  <div class="auth-container">
+    <div class="auth-card">
+      <h2>Login to <span class="highlight">Cura</span></h2>
+
+      <form method="POST" action="{{ url_for('login') }}">
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+      </form>
+
+      <p class="switch-text">
+        Don’t have an account? <a href="{{ url_for('register') }}">Register</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

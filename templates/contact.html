@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact Us | CURA</title>
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #0f0f0f;
+      color: #ddd;
+      margin: 0;
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    h1 {
+      color: #a66bff;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #aaa;
+      margin-bottom: 30px;
+    }
+
+    .contact-container {
+      background: #1a1a1a;
+      border-radius: 12px;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 30px 40px;
+      box-shadow: 0 0 25px rgba(156, 29, 231, 0.25);
+      text-align: left;
+      animation: fadeIn 0.4s ease;
+    }
+
+    label {
+      color: #ccc;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input, textarea {
+      width: 100%;
+      margin-bottom: 18px;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #111;
+      color: white;
+      font-size: 1rem;
+      resize: none;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border: 1px solid #9C1DE7;
+      background: #141414;
+    }
+
+    textarea {
+      height: 120px;
+    }
+
+    .submit-btn {
+      display: inline-block;
+      background: linear-gradient(90deg, #9C1DE7, #581B98);
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.85;
+    }
+
+    .back-btn {
+      margin-top: 25px;
+      display: inline-block;
+      color: #E0AAFF;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .back-btn:hover {
+      text-decoration: underline;
+    }
+
+    .social-icons {
+      margin: 15px 0 30px;
+    }
+
+    .social-icons a {
+      color: #9C1DE7;
+      font-size: 1.4rem;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+
+    .social-icons a:hover {
+      color: #E0AAFF;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .flash-message {
+      margin-top: 20px;
+      color: #E0AAFF;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Let’s Get in Touch</h1>
+  <p>Questions, support, or partnership? Just reach out — we’re here to help!</p>
+
+  <div class="social-icons">
+    <a href="#"><i>🐦</i></a>
+    <a href="#"><i>📘</i></a>
+    <a href="#"><i>📸</i></a>
+    <a href="#"><i>💼</i></a>
+  </div>
+
+  <!-- Contact Form -->
+  <div class="contact-container">
+    <form action="{{ url_for('contact') }}" method="POST">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" placeholder="Enter your name">
+
+      <label for="email">Email *</label>
+      <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+      <label for="phone">Phone</label>
+      <input type="text" id="phone" name="phone" placeholder="Enter your phone number">
+
+      <label for="message">Message *</label>
+      <textarea id="message" name="message" placeholder="Write your message..." required></textarea>
+
+      <button type="submit" class="submit-btn">Submit</button>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <a href="{{ url_for('index') }}" class="back-btn">← Back to Home</a>
+
+</body>
+</html>

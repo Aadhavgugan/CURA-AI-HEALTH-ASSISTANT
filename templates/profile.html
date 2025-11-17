@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile - CURA</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1c1c1c, #2e004f);
+      font-family: 'Nunito', sans-serif;
+      color: white;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 { color: #E0AAFF; }
+    form {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 15px;
+      padding: 30px;
+      display: inline-block;
+      width: 400px;
+      box-shadow: 0 0 15px rgba(156,29,231,0.4);
+    }
+    input, select {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      background: #2a2a2a;
+      color: white;
+    }
+    button {
+      background: linear-gradient(90deg, #9C1DE7, #581B98);
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+    button:hover { opacity: 0.9; }
+    a { color: #E0AAFF; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <h1>👤 My Profile</h1>
+  <form method="POST">
+    <input type="text" name="name" placeholder="Username" value="{{ user.name }}" required><br>
+    <input type="email" name="email" value="{{ user.email }}" readonly><br>
+    <input type="text" name="phone" placeholder="Phone" value="{{ user.phone or '' }}"><br>
+    <input type="date" name="dob" value="{{ user.dob or '' }}"><br>
+    <select name="gender">
+      <option value="">Select Gender</option>
+      <option value="Male" {% if user.gender=='Male' %}selected{% endif %}>Male</option>
+      <option value="Female" {% if user.gender=='Female' %}selected{% endif %}>Female</option>
+      <option value="Other" {% if user.gender=='Other' %}selected{% endif %}>Other</option>
+    </select><br>
+    <input type="password" name="password" placeholder="Change Password (optional)"><br>
+    <button type="submit">Update Profile</button><br><br>
+    <a href="{{ url_for('index') }}" class="back-btn">⬅️ Back to Home</a><br><br>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  </form>
+
+</body>
+</html>

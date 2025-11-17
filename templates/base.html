@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CURA – AI Health Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: url("{{ url_for('static', filename='images/bg_image.jpg') }}") no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.45);
+      z-index: -1;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.85);
+      padding: 15px 50px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(6px);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #9C1DE7, #581B98);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .nav-links a, .dropbtn {
+      color: #ddd;
+      text-decoration: none;
+      font-weight: 500;
+      background: none;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover, .dropbtn:hover {
+      color: #E0AAFF;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #1a1a1a;
+      min-width: 180px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      border-radius: 10px;
+      z-index: 20;
+      text-align: left;
+      right: 0;
+    }
+
+    .dropdown-content a {
+      color: #ccc;
+      padding: 10px 15px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #222;
+      color: #E0AAFF;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    /* Avatar */
+    .avatar {
+      background: linear-gradient(90deg, #9C1DE7, #581B98);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      color: #fff;
+      text-align: center;
+      line-height: 36px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      margin-right: 8px;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 130px 20px 60px;
+    }
+
+    .hero h2 {
+      color: #00ffe1;
+      font-size: 2rem;
+      margin-bottom: 5px;
+      text-shadow: 0 0 10px rgba(97, 255, 202, 0.6);
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #EAE6FF;
+      text-shadow: 0 0 15px rgba(156, 29, 231, 0.6);
+    }
+
+    .hero p {
+      color: #e0e0e0;
+      max-width: 700px;
+      margin: 15px auto;
+      font-size: 1.5rem;
+      line-height: 1.6;
+    }
+
+    /* Benefits */
+    .benefits {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 25px;
+      padding: 60px 20px;
+    }
+
+    .benefit-card {
+      background: rgba(18, 18, 18, 0.8);
+      border-radius: 15px;
+      padding: 30px 25px;
+      width: 300px;
+      text-align: left;
+      box-shadow: 0 0 15px rgba(156, 29, 231, 0.2);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(6px);
+    }
+
+    .benefit-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 25px rgba(156, 29, 231, 0.4);
+    }
+
+    .benefit-card h3 {
+      color: #E0AAFF;
+      margin-bottom: 10px;
+      font-size: 1.5rem;
+    }
+
+    .benefit-card p {
+      color: #ccc;
+      font-size: 1.2rem;
+      line-height: 1.5;
+    }
+
+    /* Chatbox */
+    .chatbox {
+      position: fixed;
+      bottom: 110px;
+      right: 40px;
+      width: 400px;
+      height: 500px;
+      background: #121212;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(156, 29, 231, 0.5);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 100;
+      font-size: 1rem;
+    }
+
+    .chatbox.open {
+      display: flex;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    .chatbox__header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(90deg, #581B98, #9C1DE7);
+      padding: 15px;
+      color: white;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .chatbox__messages {
+      flex: 1;
+      display: flex;
+      flex-direction: column-reverse;
+      padding: 15px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      background: #1a1a1a;
+    }
+
+    .message {
+      max-width: 80%;
+      margin-bottom: 10px;
+      padding: 10px 14px;
+      border-radius: 15px;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+
+    .user {
+      background: linear-gradient(90deg, #9C1DE7, #581B98);
+      align-self: flex-end;
+      border-bottom-right-radius: 5px;
+      color: #fff;
+    }
+
+    .bot {
+      background: #2a2a2a;
+      border-bottom-left-radius: 5px;
+      color: #ddd;
+      align-self: flex-start;
+    }
+
+    .chatbox__footer {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      background: #141414;
+    }
+
+    .chatbox__footer input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: #222;
+      color: white;
+      outline: none;
+      font-size: 1.2rem;
+    }
+
+    .chatbox__footer button {
+      background: linear-gradient(90deg, #9C1DE7, #581B98);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+
+    .chatbox__footer button:hover { opacity: 0.9; }
+
+    /* Floating Button */
+    .chatbox__button {
+      position: fixed;
+      bottom: 35px;
+      right: 35px;
+      z-index: 101;
+    }
+
+    .chatbox__button button {
+      background: linear-gradient(135deg, #9C1DE7, #581B98);
+      border: none;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(156, 29, 231, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .chatbox__button img {
+      width: 60%;
+      height: 60%;
+      object-fit: contain;
+    }
+
+    .chatbox__button button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 35px rgba(156, 29, 231, 0.8);
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(0, 0, 0, 0.9);
+      color: #bbb;
+      padding: 50px 80px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    footer a:hover { color: #E0AAFF; }
+    .footer-logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #9C1DE7, #581B98);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo" onclick="window.location.href='{{ url_for('index') }}'">CURA</div>
+
+  <div class="nav-links">
+    {% if current_user.is_authenticated %}
+      <div class="dropdown">
+        <button class="dropbtn">Resources ▾</button>
+        <div class="dropdown-content">
+          <a href="{{ url_for('analyze') }}">Symptom Analyzer</a>
+          <a href="{{ url_for('mental_health') }}">Mental Health Hub</a>
+          <a href="{{ url_for('diet_nutrition') }}">Diet & Nutrition</a>
+        </div>
+      </div>
+
+      {% if current_user.is_authenticated %}
+    {% if current_user.role == 'reviewer' %}
+        <a href="{{ url_for('reviewer_dashboard') }}">Reviewer Panel</a>
+    {% endif %}
+
+    <!-- Admin Panel should always be visible for logged-in users -->
+    <a href="{{ url_for('admin_panel') }}" class="admin-btn"> Admin Panel</a>
+{% endif %}
+
+
+      <div class="dropdown">
+        <div style="display:flex;align-items:center;cursor:pointer;">
+          <div class="avatar">{{ current_user.name[0]|upper }}</div>
+          <button class="dropbtn">{{ current_user.name }} ▾</button>
+        </div>
+        <div class="dropdown-content">
+          <a href="{{ url_for('profile') }}">Profile</a>
+          <a href="{{ url_for('dashboard') }}">My Feedback</a>
+          <a href="{{ url_for('user_dashboard') }}">My Health Dashboard</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+      </div>
+
+    {% else %}
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('register') }}">Register</a>
+      <a style="color:#E0AAFF;">Guest mode</a>
+    {% endif %}
+  </div>
+</nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h2>Care-Understand-Respond-Assist</h2>
+    <h1>Your Personal AI Health Assistant</h1>
+    <p>Experience the power of AI in healthcare!  
+    Ask questions, interpret test results, get reports, and receive expert insights —  
+    all in one intelligent assistant built to support your wellness journey.</p>
+
+    <h4 style="color:#1307c7;">Privacy Note:This tool is not a substitute for professional medical advice, diagnosis, or treatment. Your data is confidential and secured</h4>
+  </section>
+
+
+  <!-- Benefits Section -->
+<h1 style="text-align: center;">Benefits of Personal AI Health Assistant</h1>
+  <section class="benefits">
+    <div class="benefit-card">
+      <h3>🩺 Personalized Health Insights</h3>
+      <p>AI-powered health suggestions tailored to you.</p>
+    </div>
+    <div class="benefit-card">
+      <h3>🧠 AI-Powered Knowledge</h3>
+      <p>Powered by modern AI models trained to provide accurate, helpful information.</p>
+    </div>
+    <div class="benefit-card">
+      <h3>⏰ 24/7 Accessibility</h3>
+      <p>Your wellness companion, anytime, anywhere.</p>
+    </div>
+  </section>
+
+<h1 style="text-align: center;">How CURA Works</h1>
+  <section class="benefits">
+    <div class="benefit-card">
+      <h3>1. Tell Your Symptoms</h3>
+      <p>Describe what you feel — from headaches to stress to lifestyle questions.</p>
+    </div>
+    <div class="benefit-card">
+      <h3>2. Analyzes in Seconds</h3>
+      <p>Our CURA finds patterns and suggests possible causes based on global medical insights.</p>
+    </div>
+    <div class="benefit-card">
+      <h3>3. Get Clear Guidance</h3>
+      <p>Receive simple explanations, precautions, and steps you can take next.</p>
+    </div>
+  </section>
+
+    <h2 style="text-align:center; font-size:2.2rem; color:#E0AAFF">The Science Behind CURA</h2>
+   <section></section>
+    <p style="max-width:900px; margin:20px auto; text-align:center; font-size:1.5rem;">
+        CURA is powered by a multilayer AI engine that blends natural language understanding,
+        medical knowledge graphs, pattern analysis, and behavioral health insights.
+        While it does not replace a doctor, it helps users make informed decisions, track symptoms,
+        and manage wellness more effectively.
+    </p>
+    <ul style="text-align:center; margin:35px auto; line-height:1.8;font-size:1.5rem">
+        <li>✔ AI models trained with medically-reviewed datasets</li>
+        <li>✔ Adaptive learning based on user interaction patterns</li>
+        <li>✔ Complete Non-diagnostic, safety-first responses</li>
+        <li>✔ Continuous improvement for accuracy and clarity</li>
+    </ul>
+    </section>        
+
+<!-- Call to Action Section -->
+  <section style="padding:60px 20px; text-align:center;">
+  <h2 style="font-size:2.2rem; color:#E0AAFF;">Start Your Wellness Journey Today</h2>
+  <p style="color:#ccc; margin:15px auto; max-width:1000px;font-size:1.5rem;">
+    Join everyone and improve your health with CURA — your AI-powered wellness companion.
+  </p>
+<br><br>
+{% if not current_user.is_authenticated %}
+  <a href="/register" 
+     style="background:linear-gradient(90deg,#9C1DE7,#581B98);
+            padding:15px 35px; color:white; border-radius:10px; text-decoration:none;
+            font-weight:bold; font-size:1.1rem;">
+     Create Your Free Account
+  </a>
+{% endif %}
+
+</section>
+
+  <!-- Chatbox -->
+  <div class="chatbox__button">
+    <button onclick="toggleChat()">
+      <img src="{{ url_for('static', filename='images/file.svg') }}" alt="Chat Logo">
+    </button>
+  </div>
+
+  <div class="chatbox" id="chatbox">
+    <div class="chatbox__header">
+      <img src="{{ url_for('static', filename='images/file.svg') }}" alt="CURA Logo" width="30" height="30">
+      Chat with Cura
+    </div>
+    <div class="chatbox__messages" id="chatMessages">
+      <div class="message bot">🤖 Hi! I’m Cura — your wellness assistant.</div>
+    </div>
+    <div class="chatbox__footer">
+      <input type="text" id="chatInput" placeholder="Type your message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chatbox = document.getElementById('chatbox');
+    const input = document.getElementById('chatInput');
+    const messages = document.getElementById('chatMessages');
+    function toggleChat() { chatbox.classList.toggle('open'); }
+    async function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+      const userMsg = document.createElement('div');
+      userMsg.className = "message user";
+      userMsg.textContent = text;
+      messages.prepend(userMsg);
+      input.value = "";
+      const res = await fetch("/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      });
+      const data = await res.json();
+      const botMsg = document.createElement('div');
+      botMsg.className = "message bot";
+      botMsg.innerHTML = data.answer;
+      messages.prepend(botMsg);
+    }
+  </script>
+
+    <!-- Footer -->
+<footer>
+  <div class="footer-section">
+    <div class="footer-logo">CURA</div>
+    <p>
+      Empowering healthcare with AI.<br>
+      Cura delivers trusted medical intelligence<br> wherever it’s needed most.
+    </p>
+  </div>
+
+  <div class="footer-section">
+    <h4>Patient Tools</h4>
+    <a href="{{ url_for('analyze') }}">Symptom Checker</a>
+    <a href="{{ url_for('mental_health') }}">Mental Health Hub</a>
+    <a href="{{ url_for('diet_nutrition') }}">Diet & Nutrition</a>
+  </div>
+
+  <div class="footer-section">
+    <h4>Company</h4>
+    <a href="{{ url_for('about') }}">About Us</a>
+    <a href="{{ url_for('faq') }}">FAQs</a>
+    <a href="{{ url_for('contact') }}">Contact Us</a>
+    <a href="{{ url_for('privacy') }}">Privacy Policy</a>
+  </div>
+</footer>
+
+<style>
+  footer {
+    background: rgba(0, 0, 0, 0.9);
+    color: #bbb;
+    padding: 50px 80px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .footer-section {
+    flex: 1;
+    min-width: 220px;
+    margin-bottom: 25px;
+  }
+
+  footer h4 {
+    color: #E0AAFF;
+    margin-bottom: 15px;
+  }
+
+  footer a {
+    color: #ccc;
+    text-decoration: none;
+    display: block;  /* ✅ Forces each link onto a new line */
+    margin-bottom: 8px;
+    transition: color 0.3s ease;
+  }
+
+  footer a:hover {
+    color: #E0AAFF;
+  }
+
+  .footer-logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    background: linear-gradient(90deg, #9C1DE7, #581B98);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+</style>

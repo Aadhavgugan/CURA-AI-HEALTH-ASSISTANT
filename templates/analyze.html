@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Symptom Analyzer – Cura</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    /* ---------- Page Layout ---------- */
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: url("{{ url_for('static', filename='images/bg_image.jpg') }}") no-repeat center center fixed;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      animation: fadeInPage 0.6s ease-in;
+    }
+
+    /* ---------- Main Analyzer Box ---------- */
+    .analyze-container {
+      max-width: 700px;
+      margin: 60px auto;
+      background: #1f1f1f;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(156, 29, 231, 0.3);
+      animation: fadeIn 0.8s ease;
+    }
+
+    /* ---------- Title Styling ---------- */
+    h1 {
+      background: linear-gradient(90deg, #8a03ff65, #581B98);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    p {
+      color: #bbb;
+      margin-bottom: 25px;
+    }
+
+    /* ---------- Text Area ---------- */
+    textarea {
+      width: 100%;
+      height: 120px;
+      border-radius: 15px;
+      border: none;
+      padding: 15px;
+      font-size: 1rem;
+      resize: none;
+      background: #222;
+      color: #fff;
+      outline: none;
+    }
+
+    /* ---------- Buttons ---------- */
+    button, .back-button {
+      margin-top: 20px;
+      background: linear-gradient(90deg, #9C1DE7, #581B98);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    button:hover, .back-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px #9C1DE7;
+    }
+
+    /* ---------- Loader ---------- */
+    .loader {
+      border: 4px solid rgba(255,255,255,0.1);
+      border-top: 4px solid #9C1DE7;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 30px auto;
+      display: none;
+    }
+
+    /* ---------- AI Response ---------- */
+    .response-box {
+      margin-top: 30px;
+      background: #2a2a2a;
+      border-left: 5px solid #9C1DE7;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: left;
+      font-size: 1rem;
+      white-space: pre-line;
+      line-height: 1.5;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .ai-label {
+      font-weight: bold;
+      color: #E0AAFF;
+      margin-bottom: 5px;
+      display: inline-block;
+    }
+
+    /* ---------- Navbar ---------- */
+    .navbar {
+      background: linear-gradient(90deg, #05000b, #9d00ff);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      color: white;
+      box-shadow: 0px 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .nav-links a {
+      color: white;
+      margin-left: 15px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #E0AAFF;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInPage {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <h1 class="logo">CURA</h1>
+    <div class="nav-links">
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </nav>
+
+  <div class="analyze-container">
+    <h1>🩺 Symptom Analyzer</h1>
+    <p>Describe your symptoms, and Cura will analyze them to provide short, helpful insights.</p>
+
+    <form id="analyzeForm" method="POST" action="{{ url_for('analyze') }}">
+      <textarea name="symptoms" placeholder="e.g., I feel tired and have headaches..." required></textarea>
+      <button type="submit">Analyze</button>
+    </form>
+
+    <div class="loader" id="loader"></div>
+
+    {% if analysis %}
+    <div class="response-box" id="responseBox">
+      <span class="ai-label">🤖 Cura says:</span><br>
+      {{ analysis }}
+    </div>
+    {% endif %}
+
+    <!-- Back to Home Button -->
+    <a href="{{ url_for('index') }}" class="back-button">← Back to Home</a>
+  </div>
+
+  <script>
+    const form = document.getElementById("analyzeForm");
+    const loader = document.getElementById("loader");
+    form.addEventListener("submit", () => {
+      loader.style.display = "block";
+    });
+  </script>
+</body>
+</html>

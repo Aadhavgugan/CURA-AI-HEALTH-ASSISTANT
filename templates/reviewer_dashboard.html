@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reviewer Dashboard – CURA</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #0f0f0f;
+      color: #ddd;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.85);
+      padding: 15px 40px;
+      border-bottom: 2px solid #581B98;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #9C1DE7, #581B98);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links a, .nav-links span {
+      color: #ddd;
+      text-decoration: none;
+      margin-left: 25px;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: #E0AAFF;
+    }
+
+    .auth-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 40px auto;
+      width: 95%;
+    }
+
+    h2 {
+      color: #E0AAFF;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    table.feedback-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1a1a1a;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 25px rgba(156, 29, 231, 0.2);
+    }
+
+    table.feedback-table th, table.feedback-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #333;
+      color: #ddd;
+      vertical-align: top;
+    }
+
+    table.feedback-table th {
+      background: linear-gradient(90deg, #581B98, #9C1DE7);
+      color: white;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    table.feedback-table td {
+      text-align: center;
+    }
+
+    tr:hover {
+      background-color: rgba(156, 29, 231, 0.05);
+    }
+
+    .mark-btn, .contact-btn {
+      background: linear-gradient(90deg, #9C1DE7, #581B98);
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .mark-btn:hover, .contact-btn:hover {
+      opacity: 0.85;
+    }
+
+    .contact-btn {
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .status-reviewed {
+      color: #90EE90;
+      font-weight: bold;
+    }
+
+    .status-pending {
+      color: #FFB347;
+      font-weight: bold;
+    }
+
+    .no-feedback {
+      color: #bbb;
+      margin-top: 40px;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <h1 class="logo">CURA – Reviewer Panel</h1>
+    <div class="nav-links">
+      <span>Welcome, {{ current_user.name }} (Reviewer)</span>
+      <a href="{{ url_for('dashboard') }}">My Dashboard</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </nav>
+
+  <!-- Feedback Review Panel -->
+  <div class="auth-container">
+    <h2>🩺 Feedback & Contact Messages</h2>
+
+    {% if feedbacks %}
+    <table class="feedback-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>User</th>
+          <th>Message</th>
+          <th>Date Submitted</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for fb in feedbacks %}
+        <tr>
+          <td>{{ fb.id }}</td>
+          <td>
+            {% if fb.user_id == 0 %}
+              Guest
+            {% else %}
+              User {{ fb.user_id }}
+            {% endif %}
+          </td>
+          <td style="white-space: pre-line; text-align:left;">{{ fb.message }}</td>
+          <td>{{ fb.date_submitted.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td>
+            {% if fb.reviewed %}
+              <span class="status-reviewed">🟢 Reviewed</span>
+            {% else %}
+              <span class="status-pending">🟠 Pending</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if not fb.reviewed %}
+              <form method="POST" action="{{ url_for('reviewer_dashboard') }}" style="display:inline;">
+                <input type="hidden" name="feedback_id" value="{{ fb.id }}">
+                <button type="submit" class="mark-btn">Mark Reviewed</button>
+              </form>
+            {% endif %}
+
+            {% if "Email:" in fb.message %}
+              <a href="mailto:{{ fb.message.split('Email: ')[1].split('\n')[0] }}" class="contact-btn">📧 Get in Touch</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="no-feedback">No feedback or contact messages yet.</p>
+    {% endif %}
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

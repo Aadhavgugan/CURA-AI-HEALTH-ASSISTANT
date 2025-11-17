@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mental Health Support – Cura</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #121212;
+      color: #fff;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #E0AAFF;
+    }
+
+    .mental-container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: #1f1f1f;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(156, 29, 231, 0.3);
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      border-radius: 10px;
+      border: none;
+      background: #222;
+      color: white;
+      padding: 12px;
+      outline: none;
+    }
+
+    button, .back-button {
+      background: linear-gradient(90deg, #9C1DE7, #581B98);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: 0.3s ease;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    button:hover, .back-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px #9C1DE7;
+    }
+
+    .alert {
+      margin-top: 25px;
+      padding: 15px;
+      border-left: 5px solid #ff5f5f;
+      background: #2a1a1a;
+      color: #ffbaba;
+      border-radius: 10px;
+    }
+
+    .ai-response {
+      margin-top: 25px;
+      padding: 20px;
+      background: #2a1a2f;
+      border-left: 5px solid #9C1DE7;
+      border-radius: 10px;
+      color: #E0AAFF;
+      font-style: italic;
+      text-align: left;
+    }
+
+    .exercise-box {
+      background: #1b1b1b;
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 15px;
+    }
+
+    #timer {
+      font-size: 2rem;
+      margin-top: 15px;
+      color: #E0AAFF;
+    }
+
+    .navbar {
+      background: linear-gradient(90deg, #581B98, #9C1DE7);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      color: white;
+      box-shadow: 0px 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .nav-links a {
+      color: white;
+      margin-left: 15px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #E0AAFF;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <h1 class="logo">CURA</h1>
+    <div class="nav-links">
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('analyze') }}">Symptom Analyzer</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </nav>
+
+  <div class="mental-container">
+    <h1>🧘 Mental Health Support</h1>
+    <p>Describe how you feel right now — Cura will check for warning signs and offer calming exercises.</p>
+
+    <form method="POST">
+      <textarea name="feeling" placeholder="e.g., I feel anxious and can’t focus..." required></textarea>
+      <button type="submit">Share</button>
+    </form>
+
+    {% if alert %}
+    <div class="alert">{{ alert }}</div>
+    {% endif %}
+
+    {% if ai_response %}
+    <div class="ai-response">
+      <strong>💬 Cura’s Response:</strong>
+      <p>{{ ai_response }}</p>
+    </div>
+    {% endif %}
+
+    <div class="exercise-box">
+      <h3>🌬️ Breathing Exercise</h3>
+      <p>Follow this simple relaxation timer:</p>
+      <div id="timer">Ready?</div>
+      <button type="button" onclick="startTimer()">Start 5-4-3 Breathing</button>
+    </div>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('index') }}" class="back-button">← Back to Home</a>
+  </div>
+
+  <script>
+    function startTimer() {
+      let count = 5;
+      const timer = document.getElementById("timer");
+
+      const interval = setInterval(() => {
+        timer.textContent = `Breathe in... ${count}`;
+        count--;
+
+        if (count < 0) {
+          clearInterval(interval);
+          timer.textContent = "Now breathe out slowly...";
+          setTimeout(() => { timer.textContent = "Feeling calmer 💜"; }, 4000);
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Health Dashboard | CURA</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #0f0f0f;
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #E0AAFF;
+    }
+
+    .dashboard-container {
+      background: rgba(18,18,18,0.8);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(156, 29, 231, 0.3);
+      width: 80%;
+      margin: 40px auto;
+      padding: 40px;
+    }
+
+    canvas {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    a {
+      color: #E0AAFF;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 25px;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📊 Your Health Dashboard</h1>
+  <div class="dashboard-container">
+    <canvas id="activityChart" width="400" height="200"></canvas>
+  </div>
+
+<script>
+    const ctx = document.getElementById("activityChart").getContext("2d");
+
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: {{ dates | tojson }},
+            datasets: [
+                {
+                    label: "Diet Page Visits",
+                    data: {{ diet_visits | tojson }},
+                    backgroundColor: "rgba(147, 58, 255, 0.8)"
+                },
+                {
+                    label: "Symptom Analyzer Usage",
+                    data: {{ symptom_uses | tojson }},
+                    backgroundColor: "rgba(90, 0, 200, 0.8)"
+                },
+                {
+                    label: "Mental Health Page Visits",
+                    data: {{ mental_visits | tojson }},
+                    backgroundColor: "rgba(255, 99, 132, 0.8)"
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: "#fff" } }
+            },
+            scales: {
+                x: { ticks: { color: "#fff" } },
+                y: { ticks: { color: "#fff" } }
+            }
+        }
+    });
+</script>
+
+
+
+  <a href="{{ url_for('index') }}" class="back-btn">⬅️ Back to Home</a>
+</body>
+</html>
