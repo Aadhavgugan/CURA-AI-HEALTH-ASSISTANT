@@ -93,7 +93,6 @@ Reviewer/admin role support
 │   ├── style.css
 │   ├── images/
 │   └── js/
-│
 └── database.sqlite3
 
 🎯 Guest Mode:
