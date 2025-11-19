@@ -120,6 +120,5 @@ Flask-Login
 
 Bootstrap / Custom UI
 
-This project is developed as a complete AI-health assistant system to support learning, healthcare exploration, and personal wellness tracking.
-│
+This project is developed as a complete AI-health assistant system to support learning, healthcare exploration, and personal welln
 └── database.sqlite3
